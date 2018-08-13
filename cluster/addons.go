@@ -231,7 +231,7 @@ func (c *Cluster) deployMetricServer(ctx context.Context) error {
 
 func (c *Cluster) deployIstio(ctx context.Context) error {
 	log.Infof(ctx, "[addons] Setting up Istio")
-	istioYaml, err := addons.GetMetricsServerManifest(nil)
+	istioYaml, err := addons.GetIstioManifest(nil)
 	if err != nil {
 		return err
 	}
