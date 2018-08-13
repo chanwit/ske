@@ -103,7 +103,7 @@ func (c *Cluster) setClusterDefaults(ctx context.Context) {
 		c.Version = DefaultK8sVersion
 	}
 	if c.AddonJobTimeout == 0 {
-		c.AddonJobTimeout = k8s.DefaultTimeout
+		c.AddonJobTimeout = k8s.DefaultTimeout * 4
 	}
 	if len(c.Monitoring.Provider) == 0 {
 		c.Monitoring.Provider = DefaultMonitoringProvider
