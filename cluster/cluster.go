@@ -368,6 +368,7 @@ func ConfigureCluster(
 	if err != nil {
 		return err
 	}
+
 	kubeCluster.UseKubectlDeploy = useKubectl
 	if len(kubeCluster.ControlPlaneHosts) > 0 {
 		kubeCluster.Certificates = crtBundle

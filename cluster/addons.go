@@ -28,6 +28,8 @@ const (
 	IngressAddonJobName            = "rke-ingress-controller-deploy-job"
 	IngressAddonDeleteJobName      = "rke-ingress-controller-delete-job"
 	MetricsServerAddonResourceName = "rke-metrics-addon"
+
+	IstioResourceName = "ske-istio-system"
 )
 
 type ingressOptions struct {
@@ -75,6 +77,13 @@ func (c *Cluster) deployK8sAddOns(ctx context.Context) error {
 			return err
 		}
 		log.Warnf(ctx, "Failed to deploy addon execute job [%s]: %v", IngressAddonResourceName, err)
+
+	}
+	if err := c.deployIstio(ctx); err != nil {
+		if err, ok := err.(*addonError); ok && err.isCritical {
+			return err
+		}
+		log.Warnf(ctx, "Failed to deploy addon execute job [%s]: %v", IstioResourceName, err)
 
 	}
 	return nil
@@ -217,6 +226,19 @@ func (c *Cluster) deployMetricServer(ctx context.Context) error {
 		return err
 	}
 	log.Infof(ctx, "[addons] KubeDNS deployed successfully..")
+	return nil
+}
+
+func (c *Cluster) deployIstio(ctx context.Context) error {
+	log.Infof(ctx, "[addons] Setting up Istio")
+	istioYaml, err := addons.GetMetricsServerManifest(nil)
+	if err != nil {
+		return err
+	}
+	if err := c.doAddonDeploy(ctx, istioYaml, IstioResourceName, false); err != nil {
+		return err
+	}
+	log.Infof(ctx, "[addons] Istio deployed successfully..")
 	return nil
 }
 

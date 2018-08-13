@@ -29,7 +29,8 @@ const (
 	DefaultNetworkPlugin        = "canal"
 	DefaultNetworkCloudProvider = "none"
 
-	DefaultIngressController         = "nginx"
+	// DefaultIngressController         = "nginx"
+	DefaultIngressController         = "none"
 	DefaultEtcdBackupCreationPeriod  = "5m0s"
 	DefaultEtcdBackupRetentionPeriod = "24h"
 	DefaultMonitoringProvider        = "metrics-server"
