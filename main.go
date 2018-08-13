@@ -9,8 +9,8 @@ import (
 	"github.com/urfave/cli"
 )
 
-var VERSION = "v0.0.12-dev"
-var released = regexp.MustCompile(`^v[0-9]+\.[0-9]+\.[0-9]+$`)
+var VERSION = "v0.1.19-ske"
+var released = regexp.MustCompile(`^v[0-9]+\.[0-9]+\.[0-9]+-ske$`)
 
 func main() {
 	if err := mainErr(); err != nil {
@@ -20,21 +20,21 @@ func main() {
 
 func mainErr() error {
 	app := cli.NewApp()
-	app.Name = "rke"
+	app.Name = "ske"
 	app.Version = VERSION
-	app.Usage = "Rancher Kubernetes Engine, an extremely simple, lightning fast Kubernetes installer that works everywhere"
+	app.Usage = "SUT Kubernetes Engine"
 	app.Before = func(ctx *cli.Context) error {
 		if ctx.GlobalBool("debug") {
 			logrus.SetLevel(logrus.DebugLevel)
 		}
-		logrus.Debugf("RKE version %s", app.Version)
+		logrus.Debugf("SKE version %s", app.Version)
 		if released.MatchString(app.Version) {
 			return nil
 		}
-		logrus.Warnf("This is not an officially supported version (%s) of RKE. Please download the latest official release at https://github.com/rancher/rke/releases/latest", app.Version)
+		logrus.Warnf("This is not an officially supported version (%s) of SKE. Please download the latest official release at https://github.com/rancher/rke/releases/latest", app.Version)
 		return nil
 	}
-	app.Author = "Rancher Labs, Inc."
+	app.Author = "SKE Authors"
 	app.Email = ""
 	app.Commands = []cli.Command{
 		cmd.UpCommand(),
