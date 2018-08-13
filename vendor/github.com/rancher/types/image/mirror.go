@@ -4,6 +4,10 @@ import "strings"
 
 var Mirrors = map[string]string{}
 
+func Noop(image string) string {
+	return image
+}
+
 func Mirror(image string) string {
 	orig := image
 	if strings.HasPrefix(image, "weaveworks") {

@@ -1,23 +1,25 @@
 package v3
 
 import (
-	"fmt"
-	"strings"
+	_ "fmt"
+	_ "strings"
 
 	"github.com/rancher/types/image"
 )
 
 const (
-	DefaultK8s = "v1.11.1-rancher1-1"
+	// DefaultK8s = "v1.11.1-rancher1-1"
+	DefaultK8s = "v1.10.6-sut1-1"
 )
 
 var (
-	m = image.Mirror
+	m = image.Noop
 
 	// k8sVersionsCurrent are the latest versions available for installation
 	k8sVersionsCurrent = []string{
 		"v1.9.7-rancher2-2",
 		"v1.10.5-rancher1-2",
+		"v1.10.6-sut1-1",
 		"v1.11.1-rancher1-1",
 	}
 
@@ -464,15 +466,16 @@ func init() {
 
 	K8sVersionToRKESystemImages = map[string]RKESystemImages{}
 
-	for version, images := range AllK8sVersions {
+	for version, _ /*images*/ := range AllK8sVersions {
 		if badVersions[version] {
 			continue
 		}
 
+		/*
 		longName := "rancher/hyperkube:" + version
 		if !strings.HasPrefix(longName, images.Kubernetes) {
 			panic(fmt.Sprintf("For K8s version %s, the Kubernetes image tag should be a substring of %s, currently it is %s", version, version, images.Kubernetes))
-		}
+		}*/
 	}
 
 	for _, latest := range k8sVersionsCurrent {
