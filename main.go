@@ -31,7 +31,7 @@ func mainErr() error {
 		if released.MatchString(app.Version) {
 			return nil
 		}
-		logrus.Warnf("This is not an officially supported version (%s) of SKE. Please download the latest official release at https://github.com/rancher/rke/releases/latest", app.Version)
+		logrus.Warnf("This is not an officially supported version (%s) of SKE. Please download the latest official release at https://github.com/chanwit/ske/releases/latest", app.Version)
 		return nil
 	}
 	app.Author = "SKE Authors"
