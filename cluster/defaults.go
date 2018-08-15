@@ -34,6 +34,7 @@ const (
 	DefaultEtcdBackupCreationPeriod  = "5m0s"
 	DefaultEtcdBackupRetentionPeriod = "24h"
 	DefaultMonitoringProvider        = "metrics-server"
+	DefaultServiceMeshProvider       = "istio"
 )
 
 func setDefaultIfEmptyMapValue(configMap map[string]string, key string, value string) {
@@ -108,6 +109,10 @@ func (c *Cluster) setClusterDefaults(ctx context.Context) {
 	if len(c.Monitoring.Provider) == 0 {
 		c.Monitoring.Provider = DefaultMonitoringProvider
 	}
+	if len(c.ServiceMesh.Provider) == 0 {
+		c.ServiceMesh.Provider = DefaultServiceMeshProvider
+	}
+
 	c.setClusterImageDefaults()
 	c.setClusterServicesDefaults()
 	c.setClusterNetworkDefaults()

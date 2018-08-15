@@ -20,16 +20,18 @@ import (
 )
 
 const (
-	KubeDNSAddonResourceName      = "rke-kubedns-addon"
-	UserAddonResourceName         = "rke-user-addon"
-	IngressAddonResourceName      = "rke-ingress-controller"
-	UserAddonsIncludeResourceName = "rke-user-includes-addons"
+	KubeDNSAddonResourceName      = "ske-kubedns-addon"
+	UserAddonResourceName         = "ske-user-addon"
+	IngressAddonResourceName      = "ske-ingress-controller"
+	UserAddonsIncludeResourceName = "ske-user-includes-addons"
 
-	IngressAddonJobName            = "rke-ingress-controller-deploy-job"
-	IngressAddonDeleteJobName      = "rke-ingress-controller-delete-job"
-	MetricsServerAddonResourceName = "rke-metrics-addon"
+	IngressAddonJobName            = "ske-ingress-controller-deploy-job"
+	IngressAddonDeleteJobName      = "ske-ingress-controller-delete-job"
+	MetricsServerAddonResourceName = "ske-metrics-addon"
 
-	IstioResourceName = "ske-istio-system"
+	IstioResourceName       = "ske-istio-system"
+	IstioAddonJobName       = "ske-istio-system-deploy-job"
+	IstioAddonDeleteJobName = "ske-istio-system-delete-job"
 )
 
 type ingressOptions struct {
@@ -230,6 +232,24 @@ func (c *Cluster) deployMetricServer(ctx context.Context) error {
 }
 
 func (c *Cluster) deployIstio(ctx context.Context) error {
+	if c.ServiceMesh.Provider == "none" {
+		addonJobExists, err := addons.AddonJobExists(IstioAddonJobName, c.LocalKubeConfigPath, c.K8sWrapTransport)
+		if err != nil {
+			return nil
+		}
+		if addonJobExists {
+			log.Infof(ctx, "[service_mesh] removing the installed service mesh")
+			if err := c.doAddonDelete(ctx, IstioResourceName, false); err != nil {
+				return err
+			}
+
+			log.Infof(ctx, "[service_mesh] service mesh removed successfully")
+		} else {
+			log.Infof(ctx, "[service_mesh] service mesh is disabled, skipping")
+		}
+		return nil
+	}
+
 	log.Infof(ctx, "[addons] Setting up Istio")
 	istioYaml, err := addons.GetIstioManifest(nil)
 	if err != nil {

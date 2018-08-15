@@ -41,6 +41,8 @@ type RancherKubernetesEngineConfig struct {
 	BastionHost BastionHost `yaml:"bastion_host" json:"bastionHost,omitempty"`
 	// Monitoring Config
 	Monitoring MonitoringConfig `yaml:"monitoring" json:"monitoring,omitempty"`
+	// Service Mesh Config
+	ServiceMesh ServiceMeshConfig `yaml:"service_mesh" json:"serviceMesh,omitempty"`
 }
 
 type BastionHost struct {
@@ -275,6 +277,10 @@ type IngressConfig struct {
 	NodeSelector map[string]string `yaml:"node_selector" json:"nodeSelector,omitempty"`
 	// Ingress controller extra arguments
 	ExtraArgs map[string]string `yaml:"extra_args" json:"extraArgs,omitempty"`
+}
+
+type ServiceMeshConfig struct {
+	Provider string `yaml:"provider" json:"provider,omitempty"`
 }
 
 type RKEPlan struct {
