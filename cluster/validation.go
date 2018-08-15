@@ -38,6 +38,11 @@ func (c *Cluster) ValidateCluster() error {
 		return err
 	}
 
+	// validate Service Mesh options
+	if err := validateServiceMeshOptions(c); err != nil {
+		return err
+	}
+
 	// validate services options
 	return validateServicesOptions(c)
 }
@@ -120,6 +125,18 @@ func validateIngressOptions(c *Cluster) error {
 		return fmt.Errorf("Ingress controller %s is incorrect", c.Ingress.Provider)
 	}
 	return nil
+}
+
+func validateServiceMeshOptions(c *Cluster) error {
+	mesh := c.Ingress.Provider
+	if mesh == DefaultServiceMeshProvider {
+		return nil
+	}
+	if mesh == "none" {
+		return nil
+	}
+
+	return fmt.Errorf("Service Mesh implementation %s is incorrect", mesh)
 }
 
 func ValidateHostCount(c *Cluster) error {
