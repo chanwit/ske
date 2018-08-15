@@ -14,7 +14,7 @@ import (
 
 const (
 	DINDImage           = "docker:17.03-dind"
-	DINDContainerPrefix = "rke-dind-"
+	DINDContainerPrefix = "ske-dind-"
 	DINDPlane           = "dind"
 	DINDNetwork         = "dind-network"
 	DINDSubnet          = "172.18.0.0/16"

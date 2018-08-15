@@ -9,7 +9,7 @@ import (
 type logKey string
 
 const (
-	key logKey = "rke-logger"
+	key logKey = "ske-logger"
 )
 
 type logger interface {

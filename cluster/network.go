@@ -19,12 +19,12 @@ import (
 )
 
 const (
-	NetworkPluginResourceName = "rke-network-plugin"
+	NetworkPluginResourceName = "ske-network-plugin"
 
-	PortCheckContainer        = "rke-port-checker"
-	EtcdPortListenContainer   = "rke-etcd-port-listener"
-	CPPortListenContainer     = "rke-cp-port-listener"
-	WorkerPortListenContainer = "rke-worker-port-listener"
+	PortCheckContainer        = "ske-port-checker"
+	EtcdPortListenContainer   = "ske-etcd-port-listener"
+	CPPortListenContainer     = "ske-cp-port-listener"
+	WorkerPortListenContainer = "ske-worker-port-listener"
 
 	KubeAPIPort         = "6443"
 	EtcdPort1           = "2379"

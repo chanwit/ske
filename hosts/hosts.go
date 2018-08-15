@@ -49,7 +49,7 @@ const (
 	ToCleanCalicoRun        = "/var/run/calico/"
 	ToCleanTempCertPath     = "/etc/kubernetes/.tmp/"
 	CleanerContainerName    = "kube-cleaner"
-	LogCleanerContainerName = "rke-log-cleaner"
+	LogCleanerContainerName = "ske-log-cleaner"
 	RKELogsPath             = "/var/lib/rancher/rke/log"
 
 	B2DOS            = "Boot2Docker"
