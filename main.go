@@ -22,7 +22,7 @@ func mainErr() error {
 	app := cli.NewApp()
 	app.Name = "ske"
 	app.Version = VERSION
-	app.Usage = "SUT Kubernetes Engine"
+	app.Usage = "SUT Kubernetes Engine, built on the RKE's technology"
 	app.Before = func(ctx *cli.Context) error {
 		if ctx.GlobalBool("debug") {
 			logrus.SetLevel(logrus.DebugLevel)
