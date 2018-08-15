@@ -10,10 +10,10 @@ import (
 )
 
 const (
-	DefaultServiceClusterIPRange = "10.43.0.0/16"
+	DefaultServiceClusterIPRange = "10.33.0.0/16"
 	DefaultNodePortRange         = "30000-32767"
-	DefaultClusterCIDR           = "10.42.0.0/16"
-	DefaultClusterDNSService     = "10.43.0.10"
+	DefaultClusterCIDR           = "10.32.0.0/16"
+	DefaultClusterDNSService     = "10.33.0.10"
 	DefaultClusterDomain         = "cluster.local"
 	DefaultClusterName           = "local"
 	DefaultClusterSSHKeyPath     = "~/.ssh/id_rsa"
@@ -26,10 +26,9 @@ const (
 	DefaultAuthStrategy      = "x509"
 	DefaultAuthorizationMode = "rbac"
 
-	DefaultNetworkPlugin        = "canal"
+	DefaultNetworkPlugin        = "weave"
 	DefaultNetworkCloudProvider = "none"
 
-	// DefaultIngressController         = "nginx"
 	DefaultIngressController         = "none"
 	DefaultEtcdBackupCreationPeriod  = "5m0s"
 	DefaultEtcdBackupRetentionPeriod = "24h"
