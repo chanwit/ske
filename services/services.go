@@ -31,8 +31,8 @@ const (
 	EtcdRestoreContainerName      = "etcd-restore"
 	NginxProxyContainerName       = "nginx-proxy"
 	SidekickContainerName         = "service-sidekick"
-	LogLinkContainerName          = "rke-log-linker"
-	LogCleanerContainerName       = "rke-log-cleaner"
+	LogLinkContainerName          = "ske-log-linker"
+	LogCleanerContainerName       = "ske-log-cleaner"
 
 	KubeAPIPort        = 6443
 	SchedulerPort      = 10251

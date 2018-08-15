@@ -128,7 +128,7 @@ func validateIngressOptions(c *Cluster) error {
 }
 
 func validateServiceMeshOptions(c *Cluster) error {
-	mesh := c.Ingress.Provider
+	mesh := c.ServiceMesh.Provider
 	if mesh == DefaultServiceMeshProvider {
 		return nil
 	}
