@@ -132,7 +132,7 @@ func validateServiceMeshOptions(c *Cluster) error {
 	if mesh == DefaultServiceMeshProvider {
 		return nil
 	}
-	if mesh == "none" {
+	if mesh == "istio" {
 		return nil
 	}
 
