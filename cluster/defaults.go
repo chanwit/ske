@@ -33,7 +33,7 @@ const (
 	DefaultEtcdBackupCreationPeriod  = "5m0s"
 	DefaultEtcdBackupRetentionPeriod = "24h"
 	DefaultMonitoringProvider        = "metrics-server"
-	DefaultServiceMeshProvider       = "istio"
+	DefaultServiceMeshProvider       = "none"
 )
 
 func setDefaultIfEmptyMapValue(configMap map[string]string, key string, value string) {
