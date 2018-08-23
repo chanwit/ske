@@ -602,7 +602,7 @@ data:
     template: |-
       initContainers:
       - name: istio-init
-        image: "gcr.io/istio-release/proxy_init:1.0.0"
+        image: "gcr.io/istio-release/proxy_init:release-1.0-20180823-09-15"
         args:
         - "-p"
         - [[ .MeshConfig.ProxyListenPort ]]
@@ -638,15 +638,14 @@ data:
           capabilities:
             add:
             - NET_ADMIN
-          privileged: true
-        restartPolicy: Always
+          restartPolicy: Always
 
       containers:
       - name: istio-proxy
         image: [[ if (isset .ObjectMeta.Annotations "sidecar.istio.io/proxyImage") -]]
         "[[ index .ObjectMeta.Annotations "sidecar.istio.io/proxyImage" ]]"
         [[ else -]]
-        gcr.io/istio-release/proxyv2:1.0.0
+        gcr.io/istio-release/proxyv2:release-1.0-20180823-09-15
         [[ end -]]
         args:
         - proxy
@@ -700,7 +699,6 @@ data:
           value: [[ or (index .ObjectMeta.Annotations "sidecar.istio.io/interceptionMode") .ProxyConfig.InterceptionMode.String ]]
         imagePullPolicy: IfNotPresent
         securityContext:
-          privileged: false
           readOnlyRootFilesystem: true
           [[ if eq (or (index .ObjectMeta.Annotations "sidecar.istio.io/interceptionMode") .ProxyConfig.InterceptionMode.String) "TPROXY" -]]
           capabilities:
@@ -2124,6 +2122,10 @@ rules:
   resources: ["deployments"]
   resourceNames: ["istio-galley"]
   verbs: ["get"]
+- apiGroups: ["*"]
+  resources: ["endpoints"]
+  resourceNames: ["istio-galley"]
+  verbs: ["get"]
 
 ---
 # Source: istio/charts/gateways/templates/clusterrole.yaml
@@ -2522,6 +2524,10 @@ spec:
       port: 8060
       targetPort: 8060
     -
+      name: tcp-dns-tls
+      port: 853
+      targetPort: 853
+    -
       name: http2-prometheus
       port: 15030
       targetPort: 15030
@@ -2801,7 +2807,7 @@ spec:
       serviceAccountName: istio-galley-service-account
       containers:
         - name: validator
-          image: "gcr.io/istio-release/galley:1.0.0"
+          image: "gcr.io/istio-release/galley:release-1.0-20180823-09-15"
           imagePullPolicy: IfNotPresent
           ports:
           - containerPort: 443
@@ -2813,7 +2819,7 @@ spec:
           - --caCertFile=/etc/istio/certs/root-cert.pem
           - --tlsCertFile=/etc/istio/certs/cert-chain.pem
           - --tlsKeyFile=/etc/istio/certs/key.pem
-          - --healthCheckInterval=2s
+          - --healthCheckInterval=1s
           - --healthCheckFile=/health
           - --webhook-config-file
           - /etc/istio/config/validatingwebhookconfiguration.yaml
@@ -2830,18 +2836,18 @@ spec:
                 - /usr/local/bin/galley
                 - probe
                 - --probe-path=/health
-                - --interval=4s
-            initialDelaySeconds: 4
-            periodSeconds: 4
+                - --interval=10s
+            initialDelaySeconds: 5
+            periodSeconds: 5
           readinessProbe:
             exec:
               command:
                 - /usr/local/bin/galley
                 - probe
                 - --probe-path=/health
-                - --interval=4s
-            initialDelaySeconds: 4
-            periodSeconds: 4
+                - --interval=10s
+            initialDelaySeconds: 5
+            periodSeconds: 5
           resources:
             requests:
               cpu: 10m
@@ -2896,7 +2902,6 @@ metadata:
   name: istio-egressgateway
   namespace: istio-system
   labels:
-    app: egressgateway
     chart: gateways-1.0.0
     release: RELEASE-NAME
     heritage: Tiller
@@ -2915,8 +2920,8 @@ spec:
     spec:
       serviceAccountName: istio-egressgateway-service-account
       containers:
-        - name: egressgateway
-          image: "gcr.io/istio-release/proxyv2:1.0.0"
+        - name: istio-proxy
+          image: "gcr.io/istio-release/proxyv2:release-1.0-20180823-09-15"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
@@ -2945,7 +2950,7 @@ spec:
           - --controlPlaneAuthPolicy
           - NONE
           - --discoveryAddress
-          - istio-pilot.istio-system:8080
+          - istio-pilot:8080
           resources:
             requests:
               cpu: 10m
@@ -3033,7 +3038,6 @@ metadata:
   name: istio-ingressgateway
   namespace: istio-system
   labels:
-    app: ingressgateway
     chart: gateways-1.0.0
     release: RELEASE-NAME
     heritage: Tiller
@@ -3052,8 +3056,8 @@ spec:
     spec:
       serviceAccountName: istio-ingressgateway-service-account
       containers:
-        - name: ingressgateway
-          image: "gcr.io/istio-release/proxyv2:1.0.0"
+        - name: istio-proxy
+          image: "gcr.io/istio-release/proxyv2:release-1.0-20180823-09-15"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
@@ -3061,6 +3065,7 @@ spec:
             - containerPort: 31400
             - containerPort: 15011
             - containerPort: 8060
+            - containerPort: 853
             - containerPort: 15030
             - containerPort: 15031
           args:
@@ -3087,7 +3092,7 @@ spec:
           - --controlPlaneAuthPolicy
           - NONE
           - --discoveryAddress
-          - istio-pilot.istio-system:8080
+          - istio-pilot:8080
           resources:
             requests:
               cpu: 10m
@@ -3194,7 +3199,7 @@ spec:
     spec:
       containers:
         - name: grafana
-          image: "gcr.io/istio-release/grafana:1.0.0"
+          image: "gcr.io/istio-release/grafana:release-1.0-20180823-09-15"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
@@ -3324,7 +3329,7 @@ spec:
                 - s390x
       containers:
       - name: mixer
-        image: "gcr.io/istio-release/mixer:1.0.0"
+        image: "gcr.io/istio-release/mixer:release-1.0-20180823-09-15"
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9093
@@ -3349,7 +3354,7 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 5
       - name: istio-proxy
-        image: "gcr.io/istio-release/proxyv2:1.0.0"
+        image: "gcr.io/istio-release/proxyv2:release-1.0-20180823-09-15"
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9091
@@ -3421,7 +3426,7 @@ spec:
         emptyDir: {}
       containers:
       - name: mixer
-        image: "gcr.io/istio-release/mixer:1.0.0"
+        image: "gcr.io/istio-release/mixer:release-1.0-20180823-09-15"
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9093
@@ -3446,7 +3451,7 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 5
       - name: istio-proxy
-        image: "gcr.io/istio-release/proxyv2:1.0.0"
+        image: "gcr.io/istio-release/proxyv2:release-1.0-20180823-09-15"
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9091
@@ -3518,7 +3523,7 @@ spec:
       serviceAccountName: istio-pilot-service-account
       containers:
         - name: discovery
-          image: "gcr.io/istio-release/pilot:1.0.0"
+          image: "gcr.io/istio-release/pilot:release-1.0-20180823-09-15"
           imagePullPolicy: IfNotPresent
           args:
           - "discovery"
@@ -3527,9 +3532,9 @@ spec:
           - containerPort: 15010
           readinessProbe:
             httpGet:
-              path: /debug/endpointz
+              path: /ready
               port: 8080
-            initialDelaySeconds: 30
+            initialDelaySeconds: 5
             periodSeconds: 30
             timeoutSeconds: 5
           env:
@@ -3547,6 +3552,10 @@ spec:
             value: "500"
           - name: PILOT_CACHE_SQUASH
             value: "5"
+          - name: GODEBUG
+            value: "gctrace=2"
+          - name: PILOT_PUSH_THROTTLE_COUNT
+            value: "100"
           - name: PILOT_TRACE_SAMPLING
             value: "100"
           resources:
@@ -3561,7 +3570,7 @@ spec:
             mountPath: /etc/certs
             readOnly: true
         - name: istio-proxy
-          image: "gcr.io/istio-release/proxyv2:1.0.0"
+          image: "gcr.io/istio-release/proxyv2:release-1.0-20180823-09-15"
           imagePullPolicy: IfNotPresent
           ports:
           - containerPort: 15003
@@ -3607,6 +3616,7 @@ spec:
       - name: istio-certs
         secret:
           secretName: istio.istio-pilot-service-account
+          optional: true
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -3758,13 +3768,14 @@ spec:
       serviceAccountName: istio-citadel-service-account
       containers:
         - name: citadel
-          image: "gcr.io/istio-release/citadel:1.0.0"
+          image: "gcr.io/istio-release/citadel:release-1.0-20180823-09-15"
           imagePullPolicy: IfNotPresent
           args:
             - --append-dns-names=true
             - --grpc-port=8060
             - --grpc-hostname=citadel
             - --citadel-storage-namespace=istio-system
+            - --custom-dns-names=istio-pilot-service-account.istio-system:istio-pilot.istio-system
             - --self-signed-ca=true
           resources:
             requests:
@@ -3828,7 +3839,7 @@ spec:
     spec:
       containers:
         - name: servicegraph
-          image: "gcr.io/istio-release/servicegraph:1.0.0"
+          image: "gcr.io/istio-release/servicegraph:release-1.0-20180823-09-15"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8088
@@ -3906,7 +3917,7 @@ spec:
       serviceAccountName: istio-sidecar-injector-service-account
       containers:
         - name: sidecar-injector-webhook
-          image: "gcr.io/istio-release/sidecar_injector:1.0.0"
+          image: "gcr.io/istio-release/sidecar_injector:release-1.0-20180823-09-15"
           imagePullPolicy: IfNotPresent
           args:
             - --caCertFile=/etc/istio/certs/root-cert.pem
@@ -4122,10 +4133,10 @@ spec:
       kind: Deployment
       name: istio-egressgateway
     metrics:
-      - type: Resource
-        resource:
-          name: cpu
-          targetAverageUtilization: 60
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 80
 ---
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
@@ -4140,10 +4151,10 @@ spec:
       kind: Deployment
       name: istio-ingressgateway
     metrics:
-      - type: Resource
-        resource:
-          name: cpu
-          targetAverageUtilization: 60
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 80
 ---
 
 ---
@@ -4194,17 +4205,17 @@ kind: HorizontalPodAutoscaler
 metadata:
     name: istio-pilot
 spec:
-    maxReplicas: 1
+    maxReplicas: 5
     minReplicas: 1
     scaleTargetRef:
       apiVersion: apps/v1beta1
       kind: Deployment
       name: istio-pilot
     metrics:
-      - type: Resource
-        resource:
-          name: cpu
-          targetAverageUtilization: 55
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 80
 ---
 
 ---
@@ -4489,6 +4500,8 @@ spec:
       valueType: DURATION
     connection.mtls:
       valueType: BOOL
+    connection.requested_server_name:
+      valueType: STRING
     context.protocol:
       valueType: STRING
     context.timestamp:
@@ -4632,6 +4645,7 @@ spec:
     clientTraceId: request.headers["x-client-trace-id"] | ""
     latency: response.duration | "0ms"
     connection_security_policy: conditional((context.reporter.kind | "inbound") == "outbound", "unknown", conditional(connection.mtls | false, "mutual_tls", "none"))
+    requestedServerName: connection.requested_server_name | ""
     userAgent: request.useragent | ""
     responseTimestamp: response.time
     receivedBytes: request.total_size | 0
@@ -4670,6 +4684,7 @@ spec:
     protocol: context.protocol | "tcp"
     connectionDuration: connection.duration | "0ms"
     connection_security_policy: conditional((context.reporter.kind | "inbound") == "outbound", "unknown", conditional(connection.mtls | false, "mutual_tls", "none"))
+    requestedServerName: connection.requested_server_name | ""
     receivedBytes: connection.received.bytes | 0
     sentBytes: connection.sent.bytes | 0
     totalReceivedBytes: connection.received.bytes_total | 0
