@@ -9,8 +9,8 @@ import (
 	"github.com/urfave/cli"
 )
 
-var VERSION = "v0.1.19-ske"
-var released = regexp.MustCompile(`^v[0-9]+\.[0-9]+\.[0-9]+-ske$`)
+var VERSION = "v0.1.19-ske-1"
+var released = regexp.MustCompile(`^v[0-9]+\.[0-9]+\.[0-9]+-ske(-[0-9]+)?$`)
 
 func main() {
 	if err := mainErr(); err != nil {
@@ -22,7 +22,7 @@ func mainErr() error {
 	app := cli.NewApp()
 	app.Name = "ske"
 	app.Version = VERSION
-	app.Usage = "SUT Kubernetes Engine, built on the RKE's technology"
+	app.Usage = "Suranaree Kubernetes Engine, built on the RKE's technology"
 	app.Before = func(ctx *cli.Context) error {
 		if ctx.GlobalBool("debug") {
 			logrus.SetLevel(logrus.DebugLevel)
