@@ -1,13 +1,13 @@
-**SKE version:**
+**เวอร์ชั่นของ SKE:**
 
-**Docker version: (`docker version`,`docker info` preferred)**
+**เวอร์ชั่นของ Docker: (จากคำสั่ง `docker version`,`docker info`)**
 
-**Operating system and kernel: (`cat /etc/os-release`, `uname -r` preferred)**
+**Operating system และ รุ่น kernel: (จากคำสั่ง `cat /etc/os-release`, `uname -r`)**
 
-**Type/provider of hosts: (VirtualBox/Bare-metal/AWS/GCE/DO)**
+**ชนิดและสภาพแวดล้อมของเครื่อง host: (VirtualBox/Bare-metal/AWS/GCE/DO)**
 
-**cluster.yml file:**
+**ไฟล์ cluster.yml:**
 
-**Steps to Reproduce:**
+**วิธีการทำซ้ำให้เกิดบั๊ก:**
 
-**Results:**
+**ผลลัพธ์ชองบั๊ก:**
