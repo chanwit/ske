@@ -1,4 +1,4 @@
-**RKE version:**
+**SKE version:**
 
 **Docker version: (`docker version`,`docker info` preferred)**
 
