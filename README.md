@@ -1,27 +1,30 @@
-# rke
+# ske
 
-Rancher Kubernetes Engine, an extremely simple, lightning fast Kubernetes installer that works everywhere.
-
-## Download
-
-Please check the [releases](https://github.com/rancher/rke/releases/) page.
-
-## Requirements
-
-Please review the [OS requirements](https://rancher.com/docs/rke/v0.1.x/en/installation/os/) for each node in your Kubernetes cluster.
+Suranaree Kubernetes Engine is an RKE-based installer for Docker, Kubernetes, and Istio.
 
 ## Getting Started
 
-Please refer to our [RKE docs](http://rancher.com/docs/rke/v0.1.x/en/) for information on how to get started!
-For cluster config examples, refer to [RKE cluster.yml examples](https://rancher.com/docs/rke/v0.1.x/en/config-options/example-yamls/)
+To start a single-node Kubernetes cluster, save the following yaml into `cluster.yml`.
 
-## Deploying Rancher 2.x using rke
+```
+---
+nodes:
+- address: localhost
+  user: ubuntu
+  role:
+  - controlplane
+  - etcd
+  - worker
 
-Using RKE's pluggable [user defined add-ons](https://rancher.com/docs/rke/v0.1.x/en/config-options/add-ons/user-defined-add-ons/), it's possible to deploy Rancher 2.x server in HA with a single command. Detailed instructions can be found [here](https://rancher.com/docs/rancher/v2.x/en/installation/ha-server-install/).
+service_mesh:
+  provider: istio
+```
+
+And run `$ ske up`
 
 ## License
 
-Copyright (c) 2018 [Rancher Labs, Inc.](http://rancher.com)
+Copyright (c) 2018 [Suranaree University of Technology](http://www.sut.ac.th)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
