@@ -1,5 +1,7 @@
 package templates
 
+const IstioVersion = "1.0.1"
+
 const AddonIstioTemplate = `
 apiVersion: v1
 kind: Namespace
