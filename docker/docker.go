@@ -34,6 +34,7 @@ var K8sDockerVersions = map[string][]string{
 	"1.8":  {"1.11.x", "1.12.x", "1.13.x", "17.03.x", "18.03.2-ke-1"},
 	"1.9":  {"1.11.x", "1.12.x", "1.13.x", "17.03.x", "18.03.2-ke-1"},
 	"1.10": {"1.11.x", "1.12.x", "1.13.x", "17.03.x", "18.03.2-ke-1"},
+	"1.11": {"1.11.x", "1.12.x", "1.13.x", "17.03.x", "18.03.2-ke-1"},
 }
 
 func DoRunContainer(ctx context.Context, dClient *client.Client, imageCfg *container.Config, hostCfg *container.HostConfig, containerName string, hostname string, plane string, prsMap map[string]v3.PrivateRegistry) error {
