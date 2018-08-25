@@ -19,8 +19,33 @@ fi
 
 echo $VERSION
 
-rm -rf dist/${VERSION}
+rm -rf dist/ske-${VERSION}
+mkdir dist/ske-${VERSION}
 
-mkdir dist/${VERSION}
 
-cp bin/ske dist/${VERSION}/ske-${VERSION}
+ISTIO_VERSION=1.0.1
+KUBE_VERSION=v1.10.6
+
+cp bin/ske dist/ske-${VERSION}/ske
+
+echo "Loading istioctl ..."
+curl -sSL https://github.com/istio/istio/releases/download/${ISTIO_VERSION}/istio-${ISTIO_VERSION}-linux.tar.gz \
+	| tar xz --strip-components=2 \
+		-C dist/ske-${VERSION} \
+		istio-${ISTIO_VERSION}/bin/istioctl
+
+echo "Loading kubectl ..."
+( cd dist/ske-${VERSION} && \
+  curl -sLO https://storage.googleapis.com/kubernetes-release/release/${KUBE_VERSION}/bin/linux/amd64/kubectl && \
+  chmod +x kubectl )
+
+echo "Loading mesh-compose ..."
+( cd dist/ske-${VERSION} && \
+  curl -sL https://github.com/chanwit/binary/blob/master/mesh-compose?raw=true > mesh-compose && \
+  chmod +x mesh-compose )
+
+echo "Loading kengine ..."
+( cd dist/ske-${VERSION} && \
+  curl -sLO https://github.com/swarmee-io/kengine/releases/download/18.03.2-ke-1/kengine-18.03.2-ke-1.deb)
+
+( cd dist/ && tar cvzf ske-${VERSION}.tar.gz ske-${VERSION}/ )
