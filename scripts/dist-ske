@@ -24,7 +24,7 @@ mkdir dist/ske-${VERSION}
 
 
 ISTIO_VERSION=1.0.1
-KUBE_VERSION=v1.10.6
+KUBE_VERSION=v1.10.7
 
 cp bin/ske dist/ske-${VERSION}/ske
 
