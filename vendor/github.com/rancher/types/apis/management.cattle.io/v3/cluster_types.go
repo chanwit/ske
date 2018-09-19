@@ -78,10 +78,10 @@ type ImportedConfig struct {
 }
 
 type ClusterStatus struct {
-	//Conditions represent the latest available observations of an object's current state:
-	//More info: https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#typical-status-properties
+	// Conditions represent the latest available observations of an object's current state:
+	// More info: https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#typical-status-properties
 	Conditions []ClusterCondition `json:"conditions,omitempty"`
-	//Component statuses will represent cluster's components (etcd/controller/scheduler) health
+	// Component statuses will represent cluster's components (etcd/controller/scheduler) health
 	// https://kubernetes.io/docs/api-reference/v1.8/#componentstatus-v1-core
 	Driver                               string                   `json:"driver"`
 	AgentImage                           string                   `json:"agentImage"`
@@ -147,13 +147,13 @@ type GoogleKubernetesEngineConfig struct {
 	// Enable alpha feature
 	EnableAlphaFeature bool `json:"enableAlphaFeature,omitempty"`
 	// Configuration for the HTTP (L7) load balancing controller addon
-	DisableHTTPLoadBalancing bool `json:"disableHttpLoadBalancing,omitempty"`
+	EnableHTTPLoadBalancing *bool `json:"enableHttpLoadBalancing,omitempty" norman:"default=true"`
 	// Configuration for the horizontal pod autoscaling feature, which increases or decreases the number of replica pods a replication controller has based on the resource usage of the existing pods
-	DisableHorizontalPodAutoscaling bool `json:"disableHorizontalPodAutoscaling,omitempty"`
+	EnableHorizontalPodAutoscaling *bool `json:"enableHorizontalPodAutoscaling,omitempty" norman:"default=true"`
 	// Configuration for the Kubernetes Dashboard
 	EnableKubernetesDashboard bool `json:"enableKubernetesDashboard,omitempty"`
 	// Configuration for NetworkPolicy
-	DisableNetworkPolicyConfig bool `json:"disableNetworkPolicyConfig,omitempty"`
+	EnableNetworkPolicyConfig *bool `json:"enableNetworkPolicyConfig,omitempty" norman:"default=true"`
 	// The list of Google Compute Engine locations in which the cluster's nodes should be located
 	Locations []string `json:"locations,omitempty"`
 	// Image Type
@@ -163,11 +163,10 @@ type GoogleKubernetesEngineConfig struct {
 	// Sub Network
 	SubNetwork string `json:"subNetwork,omitempty"`
 	// Configuration for LegacyAbac
-	EnableLegacyAbac        bool   `json:"enableLegacyAbac,omitempty"`
-	NoStackdriverLogging    bool   `json:"noStackdriverLogging"`
-	NoStackdriverMonitoring bool   `json:"noStackdriverMonitoring"`
-	NoNetworkPolicy         bool   `json:"noNetworkPolicy"`
-	MaintenanceWindow       string `json:"maintenanceWindow"`
+	EnableLegacyAbac            bool   `json:"enableLegacyAbac,omitempty"`
+	EnableStackdriverLogging    *bool  `json:"enableStackdriverLogging,omitempty" norman:"default=true"`
+	EnableStackdriverMonitoring *bool  `json:"enableStackdriverMonitoring,omitempty" norman:"default=true"`
+	MaintenanceWindow           string `json:"maintenanceWindow"`
 }
 
 type AzureKubernetesServiceConfig struct {
@@ -211,6 +210,10 @@ type AzureKubernetesServiceConfig struct {
 	Subnet string `json:"subnet,omitempty"`
 	// The resource group that the virtual network is in.  If omited it is assumed to match the resource group of the cluster
 	VirtualNetworkResourceGroup string `json:"virtualNetworkResourceGroup,omitempty"`
+	// Additional options for setting a custom virtual network
+	ServiceCIDR      string `json:"serviceCidr,omitempty"`
+	DNSServiceIP     string `json:"dnsServiceIp,omitempty"`
+	DockerBridgeCIDR string `json:"dockerBridgeCidr,omitempty"`
 }
 
 type AmazonElasticContainerServiceConfig struct {
@@ -253,11 +256,12 @@ type ClusterRegistrationTokenSpec struct {
 }
 
 type ClusterRegistrationTokenStatus struct {
-	InsecureCommand string `json:"insecureCommand"`
-	Command         string `json:"command"`
-	NodeCommand     string `json:"nodeCommand"`
-	ManifestURL     string `json:"manifestUrl"`
-	Token           string `json:"token"`
+	InsecureCommand    string `json:"insecureCommand"`
+	Command            string `json:"command"`
+	WindowsNodeCommand string `json:"windowsNodeCommand"`
+	NodeCommand        string `json:"nodeCommand"`
+	ManifestURL        string `json:"manifestUrl"`
+	Token              string `json:"token"`
 }
 
 type GenerateKubeConfigOutput struct {
