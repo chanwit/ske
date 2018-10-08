@@ -2,6 +2,11 @@
 
 Suranaree Kubernetes Engine is an RKE-based installer for Docker, Kubernetes, and Istio.
 
+## Installation
+### Linux
+download [ske-v0.1.9-ske-2.tar.gz](https://www.dropbox.com/s/wqjg2b8goyj7cwd/ske-v0.1.9-ske-2.tar.gz?dl=1) file. 
+
+
 ## Getting Started
 
 To start a single-node Kubernetes cluster, save the following yaml into `cluster.yml`.
