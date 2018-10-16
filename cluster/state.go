@@ -34,12 +34,11 @@ func (c *Cluster) SaveClusterState(ctx context.Context, rkeConfig *v3.RancherKub
 		if err != nil {
 			return fmt.Errorf("[state] Failed to save configuration state to k8s: %v", err)
 		}
-		// save state to the cluster nodes as a backup
-		uniqueHosts := hosts.GetUniqueHostList(c.EtcdHosts, c.ControlPlaneHosts, c.WorkerHosts)
-		err = saveStateToNodes(ctx, uniqueHosts, rkeConfig, c.SystemImages.Alpine, c.PrivateRegistriesMap)
-		if err != nil {
-			return fmt.Errorf("[state] Failed to save configuration state to nodes: %v", err)
-		}
+	}
+	// save state to the cluster nodes as a backup
+	uniqueHosts := hosts.GetUniqueHostList(c.EtcdHosts, c.ControlPlaneHosts, c.WorkerHosts)
+	if err := saveStateToNodes(ctx, uniqueHosts, rkeConfig, c.SystemImages.Alpine, c.PrivateRegistriesMap); err != nil {
+		return fmt.Errorf("[state] Failed to save configuration state to nodes: %v", err)
 	}
 	return nil
 }
@@ -216,6 +215,7 @@ func getStateFromNodes(ctx context.Context, uniqueHosts []*hosts.Host, alpineIma
 		logrus.Debugf("[state] Failed to unmarshal the cluster file fetched from nodes: %v", err)
 		return nil
 	}
+	log.Infof(ctx, "[state] Successfully fetched cluster state from Nodes")
 	return &currentCluster
 
 }

@@ -27,7 +27,10 @@ import (
 
 const (
 	DockerRegistryURL = "docker.io"
-	RestartTimeout    = 30
+	// RestartTimeout in seconds
+	RestartTimeout = 30
+	// StopTimeout in seconds
+	StopTimeout = 5
 )
 
 var K8sDockerVersions = map[string][]string{
@@ -35,6 +38,7 @@ var K8sDockerVersions = map[string][]string{
 	"1.9":  {"1.11.x", "1.12.x", "1.13.x", "17.03.x", "18.03.2-ke-1"},
 	"1.10": {"1.11.x", "1.12.x", "1.13.x", "17.03.x", "18.03.2-ke-1"},
 	"1.11": {"1.11.x", "1.12.x", "1.13.x", "17.03.x", "18.03.2-ke-1"},
+	"1.12": {"1.11.x", "1.12.x", "1.13.x", "17.03.x", "17.06.x", "17.09.x", "18.06.x", "18.03.2-ke-1"},
 }
 
 type dockerConfig struct {
@@ -136,12 +140,6 @@ func DoRemoveContainer(ctx context.Context, dClient *client.Client, containerNam
 		}
 		return err
 	}
-	logrus.Debugf("[remove/%s] Stopping container on host [%s]", containerName, hostname)
-	err = StopContainer(ctx, dClient, hostname, containerName)
-	if err != nil {
-		return err
-	}
-
 	logrus.Debugf("[remove/%s] Removing container on host [%s]", containerName, hostname)
 	err = RemoveContainer(ctx, dClient, hostname, containerName)
 	if err != nil {
@@ -225,7 +223,7 @@ func UseLocalOrPull(ctx context.Context, dClient *client.Client, hostname string
 }
 
 func RemoveContainer(ctx context.Context, dClient *client.Client, hostname string, containerName string) error {
-	err := dClient.ContainerRemove(ctx, containerName, types.ContainerRemoveOptions{})
+	err := dClient.ContainerRemove(ctx, containerName, types.ContainerRemoveOptions{Force: true})
 	if err != nil {
 		return fmt.Errorf("Can't remove Docker container [%s] for host [%s]: %v", containerName, hostname, err)
 	}
@@ -233,7 +231,9 @@ func RemoveContainer(ctx context.Context, dClient *client.Client, hostname strin
 }
 
 func StopContainer(ctx context.Context, dClient *client.Client, hostname string, containerName string) error {
-	err := dClient.ContainerStop(ctx, containerName, nil)
+	// define the stop timeout
+	stopTimeoutDuration := StopTimeout * time.Second
+	err := dClient.ContainerStop(ctx, containerName, &stopTimeoutDuration)
 	if err != nil {
 		return fmt.Errorf("Can't stop Docker container [%s] for host [%s]: %v", containerName, hostname, err)
 	}
