@@ -32,7 +32,7 @@ const (
 
 	DefaultIngressController         = "none"
 	DefaultEtcdBackupCreationPeriod  = "12h"
-	DefaultEtcdBackupRetentionPeriod = "3d"
+	DefaultEtcdBackupRetentionPeriod = "72h"
 	DefaultEtcdSnapshot              = true
 	DefaultMonitoringProvider        = "metrics-server"
 	DefaultServiceMeshProvider       = "none"
