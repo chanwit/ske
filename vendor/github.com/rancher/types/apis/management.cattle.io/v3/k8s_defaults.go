@@ -702,6 +702,6 @@ func init() {
 		panic("Default K8s version " + DefaultK8s + " is not found in k8sVersionsCurrent list")
 	}
 
-	// init Windows versions
-	initWindows()
+	// TODO enable init Windows versions
+	// initWindows()
 }
